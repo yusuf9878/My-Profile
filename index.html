@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Yusuf Khan </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SweetAlert2 CSS & JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a1a2e;
+      color: #e6e6e6;
+      line-height: 1.6;
+      transition: background-color 1.5s ease;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+    
+    body.light-mode {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    /* Cosmic background elements */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 1;
+      transition: opacity 1.5s ease;
+    }
+    
+    .light-mode .stars {
+      opacity: 0;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite ease-in-out;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    .sun {
+      position: fixed;
+      top: -100px;
+      right: -100px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, #FFD700 0%, #FF8C00 70%);
+      border-radius: 50%;
+      box-shadow: 0 0 60px 30px rgba(255, 215, 0, 0.4);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1.5s ease, transform 2s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    }
+    
+    .light-mode .sun {
+      opacity: 1;
+    }
+    
+    .moon {
+      position: fixed;
+      top: 50px;
+      right: 50px;
+      width: 100px;
+      height: 100px;
+      background: #e6e6e6;
+      border-radius: 50%;
+      box-shadow: 
+    0 0 60px 25px rgba(230, 230, 230, 0.2),
+    0 0 120px 40px rgba(230, 230, 230, 0.8),
+    inset -15px -15px 10px rgba(0, 0, 0, 0.2);
+      z-index: -1;
+      transition: opacity 2.5s ease, transform 1s cubic-bezier(0.17, 0.67, 0.83, 0.99);
+    }
+    
+    .light-mode .moon {
+      opacity: 0;
+      transform: translateX(200px) translateY(-200px) rotate(360deg);
+    }
+    
+    /* Clouds for day mode */
+    .clouds {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    
+    .light-mode .clouds {
+      opacity: 1;
+    }
+    
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+    }
+    
+    /* Navbar styles */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+      padding: 15px 5%;
+      color: white;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 1.5s ease;
+    }
+    
+    .light-mode .navbar {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      color: #333;
+    }
+    
+    .navbar h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    /* Toggle button with advanced animation */
+    .toggle-container {
+      position: relative;
+      width: 120px;
+      height: 50px;
+      perspective: 1000px;
+    }
+    
+    .toggle-btn {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      cursor: pointer;
+    }
+    
+    .toggle-front, .toggle-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.5s ease;
+    }
+    
+    .toggle-front {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      color: white;
+      transform: rotateY(0deg);
+    }
+    
+    .toggle-back {
+      background: linear-gradient(135deg, #0984e3 0%, #6c5ce7 100%);
+      color: white;
+      transform: rotateY(180deg);
+    }
+    
+    .toggle-btn.flipped {
+      transform: rotateY(180deg);
+    }
+    
+    .toggle-icon {
+      margin-right: 8px;
+      transition: transform 0.5s ease;
+    }
+    
+    .toggle-btn:hover .toggle-icon {
+      transform: rotate(360deg);
+    }
+    
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #00b894;
+      transition: all 1.5s ease;
+    }
+    
+    .light-mode h2 {
+      color: #0984e3;
+    }
+    
+    /* Footer styles */
+    footer {
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 1.5s ease;
+      z-index: 1000;
+      font-weight:500;
+    }
+    
+    .light-mode footer {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      color: #333;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .navbar h1 {
+        font-size: 1.4rem;
+      }
+      
+      .toggle-container {
+        width: 100px;
+        height: 40px;
+      }
+      
+      h2 {
+        font-size: 2rem;
+      }
+      
+      .moon {
+        width: 70px;
+        height: 70px;
+        top: 50px;
+        right: 20px;
+      }
+      
+      .sun {
+        width: 150px;
+        height: 150px;
+      }
+    }
+    
+    .navbar h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: all 0.5s ease;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn:hover {
+      background: linear-gradient(135deg, #00cec9 0%, #00b894 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 206, 201, 0.4);
+    }
+    
+    .light-mode .btn {
+      background: linear-gradient(135deg, #0984e3 0%, #6c5ce7 100%);
+      box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    
+    .light-mode .btn:hover {
+      background: linear-gradient(135deg, #6c5ce7 0%, #0984e3 100%);
+      box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 100px auto 80px;
+      padding: 0 10px;
+    }
+    
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 0;
+      flex-wrap: wrap;
+    }
+    
+    .hero-text {
+      flex: 1;
+      min-width: 300px;
+      padding-right: 40px;
+      
+    }
+    
+    .hero-text h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #00b894;
+    }
+    
+    .light-mode .hero-text h2 {
+      color: #0984e3;
+    }
+    
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      line-height: 1.8;
+    }
+    
+    .hero-image {
+      flex: 1;
+      min-width: 300px;
+      text-align: center;
+    }
+    
+    .hero-image img {
+      max-width: 80%;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: transform 0.5s ease;
+    }
+    
+    .hero-image img:hover {
+      transform: scale(1.03);
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin: 60px 0 30px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60%;
+      height: 4px;
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      border-radius: 2px;
+    }
+    
+    .light-mode .section-title::after {
+      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+    }
+    
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    
+    .skill-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .light-mode .skill-card {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .skill-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .skill-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    
+    .html { color: #e34c26; }
+    .css { color: #264de4; }
+    .js { color: #f0db4f; }
+    .python { color: #3776ab; }
+    .react { color: #61dbfb; }
+    
+    .skill-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .project-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .light-mode .project-card {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .project-image {
+      height: 200px;
+      overflow: hidden;
+    }
+    
+    .project-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .project-card:hover .project-image img {
+      transform: scale(1.1);
+    }
+    
+    .project-info {
+      padding: 20px;
+    }
+    
+    .project-info h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .project-info p {
+      margin-bottom: 15px;
+      color: #b3b3b3;
+    }
+    
+    .light-mode .project-info p {
+      color: #666;
+    }
+    
+    .project-links {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .project-links a {
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .demo-link {
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      color: white;
+    }
+    
+    .light-mode .demo-link {
+      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+    }
+    
+    .code-link {
+      background: transparent;
+      border: 2px solid #00b894;
+      color: #00b894;
+    }
+    
+    .light-mode .code-link {
+      border-color: #0984e3;
+      color: #0984e3;
+    }
+    
+    .demo-link:hover, .code-link:hover {
+      transform: translateY(-2px);
+    }
+    
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+
+     
+      
+    }
+    
+    .light-mode .contact-form {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .light-mode .form-group input,
+    .light-mode .form-group textarea {
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.3);
+    }
+    
+    .light-mode .form-group input:focus,
+    .light-mode .form-group textarea:focus {
+      box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.3);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+    }
+    
+    .light-mode .submit-btn {
+      background: linear-gradient(135deg, #0984e3, #6c5ce7);
+      box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 206, 201, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 0;
+      }
+      
+      .hero-text {
+        padding-right: 0;
+        margin-bottom: 30px;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .skill-card {
+        width: 120px;
+        height: 120px;
+        padding: 15px;
+      }
+      
+      .skill-icon {
+        font-size: 2rem;
+      }
+      
+      .skill-name {
+        font-size: 0.9rem;
+      }
+    }
+     /* Add this to your existing CSS */
+@keyframes falling {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.falling-star {
+    position: fixed;
+    top: 0;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    z-index: -1;
+    animation: falling linear infinite;
+    opacity: 0;
+}
+
+.light-mode .falling-star {
+    display: none;
+}
+        
+       
+        
+  </style>
+</head>
+<body>
+  <!-- Background elements -->
+  <div class="stars" id="starsContainer"></div>
+  <div class="clouds" id="cloudsContainer"></div>
+  <div class="moon"></div>
+--  <div class="sun"></div>
+  
+  <!-- Navbar -->
+  <div class="navbar">
+    <h1>My Profile</h1>
+    <div class="toggle-container">
+      <div class="toggle-btn" id="themeToggle">
+        <div class="toggle-front">
+          <i class="fas fa-moon toggle-icon"></i>
+          Night
+        </div>
+        <div class="toggle-back">
+          <i class="fas fa-sun toggle-icon"></i>
+          Day
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Content -->
+  <div class="container">
+    <section class="hero">
+      <div class="hero-text">
+        <h2>Hi, I'm Yusuf khan</h2>
+        <p>I'm a passionate web developer with expertise in front-end technologies. I create beautiful, responsive websites with great user experiences. Let's build something amazing together!</p>
+        <button class="btn" id="contactbtn" onclick="">
+          <i class="fas fa-paper-plane"></i> CONTACT ME
+        </button>
+      </div>
+      <div class="hero-image">
+        <img src="https://postimage.me/images/2025/05/28/1000601805.jpg " alt="Developer working">
+      </div>
+    </section>
+    
+    <section id="skills">
+      <h2 class="section-title">My Skills & Computer Languages</h2>
+      <div class="skills-container">
+        <div class="skill-card">
+          <i class="fab fa-html5 skill-icon html"></i>
+          <span class="skill-name">HTML5</span>
+        </div>
+        <div class="skill-card">
+          <i class="fab fa-css3-alt skill-icon css"></i>
+          <span class="skill-name">CSS3</span>
+        </div>
+        <div class="skill-card">
+          <i class="fab fa-js-square skill-icon js"></i>
+          <span class="skill-name">JavaScript</span>
+        </div>
+         <div class="skill-card">
+        <i class="fa-brands fa-java skill-icon"></i>
+          <span class="skill-name">Java</span>
+        </div>
+        
+        <div class="skill-card">
+          <i class="fab fa-python skill-icon python"></i>
+          <span class="skill-name">Python</span>
+        </div>
+        <div class="skill-card">
+          <i class="fab fa-react skill-icon react"></i>
+          <span class="skill-name">React</span>
+        </div>
+        <div class="skill-card">
+          <i class="fab fa-node-js skill-icon"></i>
+          <span class="skill-name">Node.js</span>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-database skill-icon"></i>
+          <span class="skill-name">MongoDB</span>
+        </div>
+        <div class="skill-card">
+          <i class="fab fa-git-alt skill-icon"></i>
+          <span class="skill-name">Git</span>
+        </div>
+        
+        
+         <div class="skill-card">
+         <i class="fa-solid fa-server skill-icon"></i>
+          <span class="skill-name">Firebase</span>
+        </div>
+        
+          <div class="skill-card">
+        <i class="fa-solid fa-computer skill-icon"></i>
+          <span class="skill-name">Shall Script</span>
+        </div>
+        
+        
+      </div>
+      
+      
+    </section>
+    
+    <section id="projects">
+      <h2 class="section-title">My Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-image">
+            <img src="https://images.unsplash.com/photo-1608742213509-815b97c30b36?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="hacker-terminal">
+          </div>
+          
+          <div class="project-info">
+            <h3>Screen-Saver-Terminal</h3>
+            <p>A fun terminal-style screen saver that simulates coding or system activity. Great for aesthetics or idle display.</p>
+            <div class="project-links">
+              <a href="https://yusuf9878.github.io/Screen-Saver/" class="demo-link">Live Demo</a>
+              
+              <a href="#" class="code-link" id="viewcode">View Code</a>
+              
+            </div>
+          </div>
+        </div>
+
+
+          
+          
+            <div class="project-card">
+          <div class="project-image">
+            <img src="https://plus.unsplash.com/premium_photo-1664298181040-287475059d0d?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="RedRoom">
+          </div>
+          <div class="project-info">
+            <h3>Red Room</h3>
+            <p>Just A Fake Redroom Page , Use Earphone For Best Horror Experience (only for 18+)</p>
+            <div class="project-links">
+              <a href="https://red-room-peach.vercel.app" class="demo-link">Live Demo</a>
+              
+              <a href="#" class="code-link" id="viewcode">View Code</a>
+              
+            </div>
+          </div>
+          </div>
+          
+           <div class="project-card">
+          <div class="project-image">
+            <img src="https://plus.unsplash.com/premium_photo-1661302854269-2fc8f0d35d44?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Typing speed">
+          </div>
+          <div class="project-info">
+            <h3>Typing Speed Checker</h3>
+            <p>A quick and simple tool to check your typing speed. Measure words per minute and improve your accuracy.
+
+</p>
+            <div class="project-links">
+              <a href="https://typingspeed-sigma.vercel.app/" class="demo-link">Live Demo</a>
+              
+              
+              <a href="#" class="code-link" id="viewcode">View Code</a>
+              
+            </div>
+          </div>
+          </div>
+    
+          
+        </div>
+      </div>
+    </section>
+    
+    <section id="contact">
+      <h2 class="section-title">Get In Touch</h2>
+      <form action="https://docs.google.com/forms/d/e/1FAIpQLSevemVuj4ggt8ffVPeQMpEum_wtCRPeqUP_fRocjd9H9y4sxQ/formResponse" method="POST"onsubmit="submitted=true" class="contact-form">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" name="entry.2005620554" placeholder="Enter your name" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" name="entry.1045781291" placeholder="Enter your email" required>
+  </div>
+  <div class="form-group">
+    <label for="message">Message</label>
+    <textarea name="entry.839337160" placeholder="Your message here..." required></textarea>
+  </div>
+  <button type="submit" class="submit-btn">Send Message</button>
+</form>
+
+<!-- Hidden iframe to prevent redirect -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+  
+  <br>
+  <br>
+  <br>
+  
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Created By Yusuf Khan. All rights reserved.</p>
+  </footer>
+ 
+<script>
+    
+    const comingSoonButtons = document.querySelectorAll('.code-link');
+
+  comingSoonButtons.forEach(button => {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      Swal.fire({
+        title: 'Coming Soon!',
+        text: 'This feature is under development.',
+        icon: 'warning',
+        confirmButtonText: 'Okay'
+      });
+    });
+  });
+     document.getElementById("contactbtn").addEventListener("click", function() {
+    window.location.href = "https://www.instagram.com/you_know_pathan_?igsh=MWNsZTI3d3dscTJhbQ==";
+  });
+     
+       let submitted = false;
+  document.querySelector(".contact-form").addEventListener("submit", function () {
+    submitted = true;
+    setTimeout(() => {
+      if (submitted) {
+        Swal.fire({
+          title: 'Submitted!',
+          text: 'Thanks for reaching out. I’ll get back to you soon!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        this.reset();
+      }
+    }, 1000);
+  });
+</script>
+
+
+
+  <script>
+    // Create stars
+    const starsContainer = document.getElementById('starsContainer');
+    for (let i = 0; i < 200; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.width = `${Math.random() * 3 + 1}px`;
+      star.style.height = star.style.width;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+      starsContainer.appendChild(star);
+    }
+    
+    // Create clouds
+    const cloudsContainer = document.getElementById('cloudsContainer');
+    for (let i = 0; i < 10; i++) {
+      const cloud = document.createElement('div');
+      cloud.classList.add('cloud');
+      const size = Math.random() * 100 + 50;
+      cloud.style.width = `${size}px`;
+      cloud.style.height = `${size * 0.6}px`;
+      cloud.style.left = `${Math.random() * 100}%`;
+      cloud.style.top = `${Math.random() * 30}%`;
+      cloud.style.opacity = Math.random() * 0.5 + 0.3;
+      cloudsContainer.appendChild(cloud);
+    }
+    
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    // Check localStorage for saved theme
+    if(localStorage.getItem('theme') === 'light') {
+      body.classList.add('light-mode');
+      themeToggle.classList.add('flipped');
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      // Toggle the flip animation
+      themeToggle.classList.toggle('flipped');
+      
+      // Toggle the light mode class with delay for animation
+      setTimeout(() => {
+        body.classList.toggle('light-mode');
+        
+        // Save to localStorage
+        if(body.classList.contains('light-mode')) {
+          localStorage.setItem('theme', 'light');
+        } else {
+          localStorage.setItem('theme', 'dark');
+        }
+      }, 300);
+    });
+    
+    // Add animation to content when scrolling
+    const animateOnScroll = () => {
+      const content = document.querySelector('.content');
+      if (content) {
+        const contentPosition = content.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if (contentPosition < screenPosition) {
+          content.style.opacity = '1';
+          content.style.transform = 'translateY(0)';
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('load', animateOnScroll);
+    
+function createFallingStars() {
+    const starCount = 1000;
+    
+    for (let i = 0; i < starCount; i++) {
+        setTimeout(() => {
+            const star = document.createElement('div');
+            star.className = 'falling-star';
+            
+            // Random position across the width
+            star.style.left = `${Math.random() * 100}vw`;
+            
+            // Random animation duration between 2s and 5s
+            const duration = Math.random() * 3 + 2;
+            star.style.animationDuration = `${duration}s`;
+            
+            // Random delay
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            
+            // Random size between 1px and 3px
+            const size = Math.random() * 2 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            
+            // Random opacity
+            star.style.opacity = Math.random() * 0.5 + 0.5;
+            
+            document.body.appendChild(star);
+        }, i * 300);
+    }
+}
+
+// Call the function when page loads
+createFallingStars();
+
+// Also add this to your theme toggle functionality
+document.getElementById('themeToggle').addEventListener('click', function() {
+    const stars = document.querySelectorAll('.falling-star');
+    stars.forEach(star => {
+        star.style.display = document.body.classList.contains('light-mode') ? 'none' : 'block';
+    });
+});
+  </script>
+</body>
+</html>
